@@ -1,0 +1,70 @@
+:root,
+page,
+.wd-root-portal {
+	background: #efefef;
+	height: 100%;
+	box-sizing: border-box;
+	// 修改按主题色
+	--wot-primary-1: #fff5f5;
+	--wot-primary-2: #ffe3e3;
+	--wot-primary-3: #ffc9c9;
+	--wot-primary-4: #ffa8a8;
+	--wot-primary-5: #fca5a5;
+	--wot-primary-6: #f87171;
+	--wot-primary-7: #ef4444;
+	--wot-primary-8: #dc2626;
+	--wot-primary-9: #b91c1c;
+	--wot-primary-10: #7f1d1d;
+
+	--wot-input-bg: #F2F3F5;
+	--wot-textarea-bg: #F2F3F5;
+	--wot-divider-padding: 0;
+}
+
+.wd-input {
+	border-radius: 0.5rem;
+}
+
+.wd-textarea {
+	border-radius: 0.5rem;
+}
+
+@import '@climblee/uv-ui/index.scss';
+$uv-primary: #f87171;
+
+// 去除button的所有默认样式，让其表现跟普通的view、text元素一样
+.reset-button {
+	/* 移除内外边距 */
+	margin: 0;
+	padding: 0;
+
+	/* 移除默认的背景和边框 */
+	background: none;
+	border: none;
+
+	/* 移除默认的文字样式 */
+	font: inherit;
+	color: inherit;
+
+	/* 移除按钮的内建样式 */
+	appearance: none;
+	/* 对于大多数现代浏览器 */
+	-webkit-appearance: none;
+	/* Safari 和 Chrome */
+
+	/* 移除点击时的轮廓 */
+	outline: none;
+
+	/* 可选：确保按钮可以被点击 */
+	cursor: pointer;
+
+	/* 如果需要完全去除所有用户交互样式 */
+	&:active,
+	&:focus,
+	&:hover,
+	&:after {
+		background: none;
+		border: none;
+		outline: none;
+	}
+}

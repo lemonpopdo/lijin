@@ -1,0 +1,351 @@
+<script setup lang="ts">
+import { useDialog, useQueue } from '@wot-ui/ui'
+import { usePagination } from 'alova/client'
+import { storeToRefs } from 'pinia'
+
+definePage({
+  style: {
+    navigationBarTitleText: '详情',
+  },
+})
+
+const { closeOutside } = useQueue()
+let videoAd: any = null
+const { isVip } = storeToRefs(useAuthStore())
+const search = ref({
+  field: 'friendName',
+  order: 'asc',
+  keyword: '',
+})
+const dialog = useDialog()
+const book = ref<Api.Book>({})
+const sortList = ref([
+  { label: '姓名', field: 'friendName', value: 1 },
+  { label: '金额', field: 'money', value: 0 },
+])
+
+const { loading, page, data: dataList, isLastPage, reload } = usePagination((page, pageSize) => apiBookItemPageGet({ bookId: book.value.id, page, pageSize, ...search.value }), {
+  data: response => response.items || [],
+  total: response => response.total || 0,
+  append: true,
+  immediate: false,
+  watchingStates: [search],
+  debounce: [300],
+  preloadPreviousPage: false,
+  preloadNextPage: false,
+})
+
+const loadData = async () => {
+  book.value = await apiBookGet({ id: book.value.id })
+}
+const handlePlayVideoAd = () => {
+  if (videoAd) {
+    videoAd.show().catch(() => {
+      // 失败重试
+      videoAd.load()
+        .then(() => videoAd.show())
+        .catch((err: any) => {
+          uni.showToast({
+            icon: 'none',
+            title: '激励视频 广告显示失败',
+          })
+          console.error('激励视频 广告显示失败', err)
+        })
+    })
+  }
+}
+
+const handleBookExport = async () => {
+  uni.showLoading({
+    title: '正在导出数据...',
+    mask: true,
+  })
+  const { tempFilePath } = await apiBookExportGet(book.value.id)
+  uni.openDocument({
+    filePath: tempFilePath,
+    showMenu: true,
+    fileType: 'pdf',
+    fail: (err) => {
+      uni.showToast({
+        icon: 'none',
+        title: err.errMsg || '导出失败！',
+      })
+    },
+  })
+  uni.hideLoading()
+}
+
+onLoad(async (option) => {
+  loading.value = true
+  if (option?.id) {
+    book.value.id = option.id
+  }
+
+  // 在页面onLoad回调事件中创建激励视频广告实例
+  if (wx.createRewardedVideoAd) {
+    videoAd = wx.createRewardedVideoAd({
+      adUnitId: 'adunit-f2113fa7b839e7e6',
+    })
+    videoAd.onLoad(() => { })
+    videoAd.onError((err: any) => {
+      console.error('激励视频广告加载失败', err)
+    })
+    videoAd.onClose((res: any) => {
+      // 用户点击了【关闭广告】按钮
+      if (res && res.isEnded) {
+        // 正常播放结束，可以下发游戏奖励
+        handleBookExport()
+      }
+    })
+  }
+})
+
+onShow(async () => {
+  await loadData()
+  await reload()
+})
+
+onReachBottom(() => {
+  if (loading.value || isLastPage.value)
+    return
+  page.value++
+})
+
+const onSortChange = (sort: any) => {
+  sortList.value.forEach((item) => {
+    if (item.field !== sort.field) {
+      item.value = 0
+    }
+  })
+
+  search.value.field = sort?.field
+  search.value.order = sort?.value === 1 ? 'asc' : 'desc'
+}
+
+const onGiftClick = (gid?: string) => {
+  if (gid) {
+    uni.navigateTo({
+      url: `/pages/bookItem/detail?id=${gid}`,
+    })
+  }
+}
+
+const onGiftAdd = () => {
+  uni.navigateTo({
+    url: `/pages/bookItem/edit?bookId=${book.value.id}`,
+  })
+}
+
+const onBookEdit = () => {
+  uni.navigateTo({
+    url: `/pages/book/edit?id=${book.value.id}`,
+  })
+}
+
+const onBookExport = () => {
+  if (isVip.value) {
+    handleBookExport()
+  }
+  else {
+    dialog.confirm({
+      msg: '成为会员，即可解锁数据导出无限制权益',
+      title: '数据导出权益',
+      confirmButtonText: '开通会员',
+      cancelButtonText: '看广告解锁',
+      closeOnClickModal: true,
+    }).then(() => {
+      uni.navigateTo({
+        url: '/pages/subscription/plan',
+      })
+    }).catch(({ action }) => {
+      if (action === 'cancel')
+        handlePlayVideoAd()
+    })
+  }
+}
+
+const onBookDel = () => {
+  dialog.confirm({
+    msg: '该礼簿所有人情往来记录都将被删除，确定删除？',
+    title: '删除礼簿',
+  }).then(async () => {
+    await apiBookDelete({ id: book.value.id })
+    uni.showToast({
+      title: '删除成功',
+      icon: 'success',
+    })
+    setTimeout(() => {
+      uni.navigateBack()
+    }, 1000)
+  })
+}
+
+const menu = ref<any[]>([
+  {
+    iconClass: 'edit',
+    content: '编辑礼簿',
+  },
+  {
+    iconClass: 'download',
+    content: '数据导出',
+  },
+  {
+    iconClass: 'delete',
+    content: '删除礼簿',
+  },
+])
+
+function onMenuClick(e: any) {
+  switch (e.index) {
+    case 0:
+      onBookEdit()
+      break
+    case 1:
+      onBookExport()
+      break
+    case 2:
+      onBookDel()
+      break
+  }
+}
+</script>
+
+<template>
+  <div class="mx-3" :class="{ memorial: hasMourningWords(book.title) }" @click="closeOutside">
+    <div v-if="!book.title" class="rounded-2xl bg-white p-5">
+      <wd-skeleton
+        :row-col="[{ width: '30%' }, { width: '60%' }, { width: '20%' }, [{ width: '20%' }, { width: '20%' }, { width: '20%' }, { width: '20%' }]]"
+      />
+    </div>
+
+    <div v-else class="rounded-2xl bg-white px-5 pb-5 pt-3 space-y-3">
+      <div>
+        <div class="flex items-center justify-between">
+          <div class="text-lg text-red font-bold">
+            {{ book.title }}
+          </div>
+          <div>
+            <wd-popover mode="menu" :content="menu" placement="bottom-end" @menuclick="onMenuClick">
+              <i class="i-weui-more-filled text-xl" />
+            </wd-popover>
+          </div>
+        </div>
+
+        <div class="mt-1 text-sm text-gray">
+          <span>{{ generateLunarDate(book.date) }}</span>
+          <span class="ml-2">({{ book.date }}) </span>
+        </div>
+      </div>
+      <div class="flex justify-around divide-x">
+        <div class="text-center">
+          <div class="text-lg text-black font-bold">
+            {{ book.count }}
+          </div>
+          <div class="flex items-center justify-center text-xs text-gray space-x-1">
+            <div class="i-hugeicons-home-12" />
+            <div>亲友</div>
+          </div>
+        </div>
+        <div v-if="book.isBanquet" class="text-center">
+          <div class="text-lg text-black font-bold">
+            {{ book.attendanceTotal }}
+          </div>
+          <div class="flex items-center justify-center text-xs text-gray space-x-1">
+            <div class="i-carbon-pedestrian-family" />
+            <div>出席</div>
+          </div>
+        </div>
+        <div v-if="book.isBanquet" class="text-center">
+          <div class="text-lg text-black font-bold">
+            {{ book.cost }}
+          </div>
+          <div class="flex items-center justify-center text-xs text-gray space-x-1">
+            <div class="i-carbon:sprout" />
+            <div>支出</div>
+          </div>
+        </div>
+        <div class="text-center text-sm text-gray">
+          <div class="text-lg text-black font-bold">
+            {{ book.moneyTotal }}
+          </div>
+          <div class="flex items-center justify-center text-xs text-gray space-x-1">
+            <div class="i-mingcute-wallet-2-line" />
+            <div>礼金</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-3 rounded-2xl bg-white p-3 px-5">
+      <div class="w-full flex items-center justify-between">
+        <wd-search v-model="search.keyword" custom-class="!p-0 w-full" :maxlength="20" placeholder="请输入亲友姓名/关键词"
+                   hide-cancel placeholder-left
+        />
+        <div class="flex text-xl text-red">
+          <!-- <i class="i-hugeicons-search-02" @click="onSearchClick" /> -->
+          <i class="i-hugeicons-plus-sign-circle ms-3" @click="onGiftAdd" />
+        </div>
+      </div>
+      <div class="space-x-3">
+        <wd-sort-button v-for="(item, index) in sortList" :key="index" v-model="item.value" :title="item.label"
+                        @change="onSortChange(item)"
+        />
+      </div>
+      <div class="mt-3">
+        <template v-if="dataList.length === 0">
+          <div v-if="loading" class="mt-5 text-center">
+            <wd-loading color="#f87171" />
+            <div class="mt-3 text-gray">
+              正在努力加载中...
+            </div>
+          </div>
+          <div v-else class="my-24">
+            <wd-empty tip="还没有人情往来记录哦~" mode="favor">
+              <div class="mt-6">
+                <wd-button class="mt-6" round @click="onGiftAdd()">
+                  添加收礼
+                </wd-button>
+              </div>
+            </wd-empty>
+          </div>
+        </template>
+        <template v-else>
+          <div v-for="(gift, index) in dataList" :key="gift.id" @click="onGiftClick(gift.id)">
+            <wd-divider v-if="index" />
+            <div class="space-y-1">
+              <div class="flex justify-between text-lg">
+                <div class="flex items-center">
+                  {{ gift.friendName }}
+                  <div v-if="gift.friendRelation" class="ml-1 text-sm text-gray">
+                    @{{ gift.friendRelation }}
+                  </div>
+                </div>
+                <div class="text-red font-bold">
+                  +{{ gift.money }}
+                </div>
+              </div>
+              <div class="flex flex-wrap items-center gap-1 text-sm">
+                <wd-tag variant="light" type="primary" round>
+                  {{ gift.moneyType === 0 ? '礼金' : '实物' }}
+                </wd-tag>
+                <wd-tag v-if="gift.payWay" variant="light" type="primary" round>
+                  {{ gift.payWay }}
+                </wd-tag>
+              </div>
+              <div v-if="gift.remarks" class="line-clamp-1 text-sm text-gray">
+                备注：{{ gift.remarks }}
+              </div>
+            </div>
+          </div>
+          <wd-loadmore :state="loading ? 'loading' : isLastPage ? 'finished' : 'error'"
+                       :loading-props="{ color: '#f87171' }"
+          />
+        </template>
+      </div>
+    </div>
+
+    <wd-fab :gap="{ bottom: 64 }" :expandable="false" @click="onGiftAdd()" />
+  </div>
+</template>
+
+<style lang="scss" scoped></style>

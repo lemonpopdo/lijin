@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" href="static/logo.webp">
+  <script>
+    const coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)')
+      || CSS.supports('top: constant(a)'))
+    document.write(
+      `<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0${coverSupport ? ', viewport-fit=cover' : ''}" />`)
+  </script>
+  <title>人情礼记｜每一份人情都值得礼记</title>
+  <meta name="description" content="专注于记录和管理人情往来中的随礼、收礼、份子钱、礼金、心意、礼物、红包、封包等，多维度查询和统计亲友间的往来记录，家人共享记账，你贴心的人情往来数字记账伙伴。">
+  <meta name="keywords" content="人情记账,人情账簿,人情账本,礼尚往来,家人共享记账,随礼,收礼,份子钱,礼金,心意,礼物,红包,封包">
+  <!--preload-links-->
+  <!--app-context-->
+</head>
+
+<body>
+  <div id="app"><!--app-html--></div>
+
+  <!-- built files will be auto injected -->
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>

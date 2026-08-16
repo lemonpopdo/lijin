@@ -1,0 +1,139 @@
+[
+  {
+    "id": "users0000000001",
+    "name": "users",
+    "type": "auth",
+    "listRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "viewRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "createRule": null,
+    "updateRule": "@request.auth.id = id",
+    "deleteRule": null,
+    "fields": [
+      { "name": "nickName", "type": "text" },
+      { "name": "avatar", "type": "text" },
+      { "name": "familyId", "type": "text", "required": true, "min": 1, "max": 100 },
+      { "name": "familyRole", "type": "text" },
+      { "name": "accountType", "type": "number", "min": 0, "max": 9 }
+    ],
+    "passwordAuth": { "enabled": true, "identityFields": ["email"] }
+  },
+  {
+    "id": "households00001",
+    "name": "households",
+    "type": "base",
+    "listRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "viewRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "createRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "updateRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "deleteRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "fields": [
+      { "name": "name", "type": "text", "required": true },
+      { "name": "category", "type": "select", "values": ["直系", "亲戚", "朋友", "同事", "同学", "邻里", "其他"], "maxSelect": 1 },
+      { "name": "address", "type": "text" },
+      { "name": "hometown", "type": "text" },
+      { "name": "remarks", "type": "text" },
+      { "name": "familyId", "type": "text", "required": true }
+    ]
+  },
+  {
+    "id": "friends00000000",
+    "name": "friends",
+    "type": "base",
+    "listRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "viewRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "createRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "updateRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "deleteRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "fields": [
+      { "name": "name", "type": "text", "required": true },
+      { "name": "firstLetter", "type": "text" },
+      { "name": "tagList", "type": "json" },
+      { "name": "remarks", "type": "text" },
+      { "name": "relation", "type": "text" },
+      { "name": "familyId", "type": "text", "required": true }
+    ]
+  },
+  {
+    "id": "gifts0000000000",
+    "name": "gifts",
+    "type": "base",
+    "listRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "viewRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "createRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "updateRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "deleteRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "fields": [
+      { "name": "title", "type": "text" },
+      { "name": "money", "type": "number" },
+      { "name": "moneyType", "type": "number" },
+      { "name": "icon", "type": "text" },
+      { "name": "remarks", "type": "text" },
+      { "name": "date", "type": "date" },
+      { "name": "friendId", "type": "text" },
+      { "name": "friendName", "type": "text" },
+      { "name": "friendRelation", "type": "text" },
+      { "name": "friendTagList", "type": "json" },
+      { "name": "entityName", "type": "text" },
+      { "name": "payWay", "type": "text" },
+      { "name": "familyId", "type": "text", "required": true }
+    ]
+  },
+  {
+    "id": "friendtags00000",
+    "name": "friendTags",
+    "type": "base",
+    "listRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "viewRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "createRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "updateRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "deleteRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "fields": [
+      { "name": "name", "type": "text", "required": true },
+      { "name": "familyId", "type": "text", "required": true }
+    ]
+  },
+  {
+    "id": "books0000000000",
+    "name": "books",
+    "type": "base",
+    "listRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "viewRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "createRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "updateRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "deleteRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "fields": [
+      { "name": "title", "type": "text", "required": true },
+      { "name": "cost", "type": "number" },
+      { "name": "remarks", "type": "text" },
+      { "name": "date", "type": "date" },
+      { "name": "isBanquet", "type": "bool" },
+      { "name": "familyId", "type": "text", "required": true }
+    ]
+  },
+  {
+    "id": "bookitems000000",
+    "name": "bookItems",
+    "type": "base",
+    "listRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "viewRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "createRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "updateRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "deleteRule": "@request.auth.id != \"\" && familyId = @request.auth.familyId",
+    "fields": [
+      { "name": "money", "type": "number" },
+      { "name": "moneyType", "type": "number" },
+      { "name": "attendance", "type": "number" },
+      { "name": "remarks", "type": "text" },
+      { "name": "bookId", "type": "text", "required": true },
+      { "name": "title", "type": "text" },
+      { "name": "date", "type": "date" },
+      { "name": "friendId", "type": "text" },
+      { "name": "friendName", "type": "text" },
+      { "name": "friendRelation", "type": "text" },
+      { "name": "friendTagList", "type": "json" },
+      { "name": "entityName", "type": "text" },
+      { "name": "payWay", "type": "text" },
+      { "name": "familyId", "type": "text", "required": true }
+    ]
+  }
+]
