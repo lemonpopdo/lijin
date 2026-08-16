@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/chadwuo/li-ji-weapp">
+  <a href="https://github.com/lemonpopdo/lijin">
     <img src="https://gitee.com/Chadwuo/li-ji-weapp/raw/main/doc/img/logo.webp" alt="Logo" width="80" height="80">
   </a>
 
@@ -7,11 +7,7 @@
   <p align="center">
     每一份人情都值得礼记
     <br />
-    <a href="https://liji.poetic.ltd">主页</a>
-    ·
-    <a href="https://liji.poetic.ltd">演示</a>
-    ·
-    <a href="https://github.com/Chadwuo/li-ji-weapp/issues/new?template=feature_request.md">提出新特性</a>
+    <a href="https://github.com/lemonpopdo/lijin/issues/new?template=feature_request.md">提出新特性</a>
   </p>
 </p>
 
@@ -22,7 +18,7 @@
 ---
 
 ## 🎉 在线体验
- <img src="https://gitee.com/Chadwuo/li-ji-weapp/raw/main/doc/img/code.jpg" alt="Logo" width="240" height="240">
+部署后填写你的域名二维码
 
 ## ✨ 特性
 
@@ -38,17 +34,16 @@
 
 ## 🚀 贡献
 
-感谢所有已经为 礼记 做出贡献的人！
+本项目基于 [Chadwuo/li-ji-weapp](https://github.com/Chadwuo/li-ji-weapp) 二次开发，感谢原作者的贡献。
 
-<a href="https://github.com/Chadwuo/li-ji-weapp/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=Chadwuo/li-ji-weapp" />
-</a>
+欢迎提交 Issue 和 PR。
 
 ## 🌟 Star History
-[![Star History Chart](https://api.star-history.com/svg?repos=Chadwuo/li-ji-weapp&type=Date)](https://star-history.com/#Chadwuo/li-ji-weapp&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=lemonpopdo/lijin&type=Date)](https://star-history.com/#lemonpopdo/lijin&Date)
 
 ## 📜 许可证
 
-礼记 使用 GPL-3.0 开源许可协议，在此之前请您务必了解该协议的许可说明以及遵守该协议的法律条件，详情请参阅 [LICENSE](https://github.com/chadwuo/li-ji-weapp/blob/master/LICENSE)。
+礼记 使用 GPL-3.0 开源许可协议，在此之前请您务必了解该协议的许可说明以及遵守该协议的法律条件，详情请参阅 [LICENSE](https://github.com/lemonpopdo/lijin/blob/master/LICENSE)。
 
 Copyright © Chadwuo Design. All Rights Reserved
+二次开发：lemonpopdo
