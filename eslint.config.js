@@ -12,6 +12,7 @@ export default uni(
       'doc/**',
       'pocketbase/pb_data/**',
       'pocketbase/seed.js',
+      'pocketbase/pb_migrations/**',
     ],
     stylistic: {
       overrides: {
